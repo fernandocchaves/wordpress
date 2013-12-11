@@ -52,7 +52,7 @@
 
   //text footer admin
   function remove_footer_admin () {
-    echo 'Implementado por <a href="http://gobek.com.br/" target="_blank">Gobek</a>';
+    echo 'Implementado por <a href="http://fernandocchaves.com.br/" target="_blank">Fernando Cezar Chaves</a>';
   }
 
   //alter logo login admin
@@ -473,6 +473,18 @@ if ( !current_user_can( 'edit_users' ) ) {
     add_action( 'init', create_function( '$a', "remove_action( 'init', 'wp_version_check' );" ), 2 );
     add_filter( 'pre_option_update_core', create_function( '$a', "return null;" ) );
 }
+
+function change_post_to_article( $translated ) {
+	$translated = str_ireplace(  'Posts',  'Notícias',  $translated );
+	$translated = str_ireplace(  'Todos os',  'Todas as',  $translated );
+			return $translated;
+}
+
+//remove alerta de atualizações
+if ( !current_user_can( 'edit_users' ) ) {
+    add_action( 'init', create_function( '$a', "remove_action( 'init', 'wp_version_check' );" ), 2 );
+    add_filter( 'pre_option_update_core', create_function( '$a', "return null;" ) );
+}
 /*------------------------------------*\
 	Custom Post Types
 \*------------------------------------*/
@@ -571,5 +583,25 @@ function attachmentUrl($attachment_id, $size){
     $image = wp_get_attachment_image_src( $attachment_id, $size);
     return $image[0];
 }
+
+/***FUNCAO PARA CRIACAO DA PAGINAS AUTOMATICAMENTE*******/
+  check_pages();
+  function check_pages(){
+	if(!get_page_by_title('Contato')){ create_page('Contato');}
+  }
+
+  function create_page($page_name){
+    // Create post object
+    $custom_page = array(
+      'post_title'    => $page_name,
+      'post_content'  => '',
+      'post_status'   => 'publish',
+      'post_author'   => 1,
+      'post_type'     => 'page'
+    );
+
+    // Insert the post into the database
+    wp_insert_post( $custom_page );
+  }
 
 ?>
